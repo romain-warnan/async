@@ -11,27 +11,15 @@ public class RequestTest {
 	private SireneService service = SireneService.getInstance();
 	
 	@Test
-	public void quickRequest() {
-		Etablissements etablissements = service.quickRequest();
-		assertThat(etablissements).hasSize(20);
-	}
-	
-	@Test
-	public void averageRequest() {
-		Etablissements etablissements = service.averageRequest();
-		assertThat(etablissements).hasSize(20);
-	}
-	
-	@Test
-	public void slowRequest() {
-		Etablissements etablissements = service.slowRequest();
-		assertThat(etablissements).hasSize(20);
-	}
-	
-	@Test
 	public void fetchOne() {
 		Etablissement etablissement = service.fetchOne(12345);
 		assertThat(etablissement).isNotNull();
+	}
+
+	@Test
+	public void fetchFrom() {
+		Etablissements etablissements = service.fetchFrom(1000);
+		assertThat(etablissements).hasSize(20);
 	}
 	
 	@Test
@@ -39,7 +27,6 @@ public class RequestTest {
 		Etablissements etablissements = service.fetchFirst();
 		assertThat(etablissements).hasSize(20);
 	}
-	
 	
 	@Test
 	public void fetchNext() {

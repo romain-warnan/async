@@ -75,16 +75,4 @@ public class SireneService {
 			.get(SireneReponse.class);
 		return new Etablissements(reponse);
 	}
-	
-	public Etablissements quickRequest() {
-		return fetchFrom(0);
-	}
-	
-	public Etablissements averageRequest() {
-		return fetchFrom(5_000);
-	}
-	
-	public Etablissements slowRequest() {
-		return fetchFrom(50_000);
-	}
 }

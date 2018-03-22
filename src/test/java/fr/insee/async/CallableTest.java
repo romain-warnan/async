@@ -1,5 +1,7 @@
 package fr.insee.async;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,5 +50,25 @@ public class CallableTest {
 		System.out.println("Récupération du contenu du future");
 		Etablissement etablissement = future.get();
 		System.out.println(etablissement);
+	}
+	
+	@Test
+	public void invokeAll() throws InterruptedException, ExecutionException {
+		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		
+		System.out.println("Soumission des callables");
+		List<Future<Etablissement>> futures = executorService.invokeAll(Arrays.asList(
+			() -> sireneService.fetchOne(0),
+			() -> sireneService.fetchOne(100),
+			() -> sireneService.fetchOne(10000),
+			() -> sireneService.fetchOne(10001),
+			() -> sireneService.fetchOne(10002)
+		));
+		executorService.shutdown();
+		
+		System.out.println("Récupération du contenu des futures");
+		for (Future<Etablissement> future : futures) {
+			System.out.println(future.get());
+		}
 	}
 }
