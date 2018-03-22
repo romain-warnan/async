@@ -1,15 +1,18 @@
 package fr.insee.async;
 
-import java.util.concurrent.CompletableFuture;
-import static java.util.concurrent.CompletableFuture.*;
+import static java.util.concurrent.CompletableFuture.allOf;
+import static java.util.concurrent.CompletableFuture.anyOf;
+import static java.util.concurrent.CompletableFuture.runAsync;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.assertj.core.util.Objects;
 import org.junit.Test;
 
 import fr.insee.async.sirene.service.CalculService;
@@ -49,17 +52,15 @@ public class CompletableFutureTest {
 		).get(1, TimeUnit.MINUTES);
 	}
 	
-	
 	@Test
 	public void anyOfTest() throws InterruptedException, ExecutionException, TimeoutException {
-		ExecutorService executor = Executors.newFixedThreadPool(5);
-		anyOf(
-			supplyAsync(() -> sireneService.fetchOne(10000), executor),
-			supplyAsync(() -> sireneService.fetchOne(1000), executor),
-			supplyAsync(() -> sireneService.fetchOne(100), executor),
-			supplyAsync(() -> sireneService.fetchOne(10), executor)
-		).thenAccept(System.out::println);
-		executor.shutdown();
-		executor.awaitTermination(1, TimeUnit.MINUTES);
+		Object object = anyOf(
+			supplyAsync(() -> sireneService.fetchOne(10000)),
+			supplyAsync(() -> sireneService.fetchOne(1000)),
+			supplyAsync(() -> sireneService.fetchOne(100)),
+			supplyAsync(() -> sireneService.fetchOne(10))
+		).get(1, TimeUnit.MINUTES);
+		Etablissement e = Objects.castIfBelongsToType(object, Etablissement.class);
+		System.out.println(e);
 	}
 }
