@@ -10,13 +10,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import fr.insee.async.sirene.service.CalculeService;
+import fr.insee.async.sirene.service.CalculService;
 import fr.insee.async.sirene.service.SireneService;
 
 public class CallableTest {
 	
 	private SireneService sireneService = SireneService.getInstance();
-	private CalculeService calculeService = CalculeService.getInstance();
+	private CalculService calculeService = CalculService.getInstance();
 	
 	@Test
 	public void callableTest() throws InterruptedException, ExecutionException {
