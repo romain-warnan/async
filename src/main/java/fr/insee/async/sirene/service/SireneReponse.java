@@ -70,7 +70,7 @@ public class SireneReponse {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class SireneEtab {
 		
-		@JsonProperty("Denomination")
+		@JsonProperty("Siren")
 		private String siren;
 		
 		@JsonProperty("Nic")

@@ -34,4 +34,9 @@ public class Etablissement {
 	public void setDenomination(String denomination) {
 		this.denomination = denomination;
 	}
+
+	@Override
+	public String toString() {
+		return siren + " " + nic + " " + denomination;
+	}
 }

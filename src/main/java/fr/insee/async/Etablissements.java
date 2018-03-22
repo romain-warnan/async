@@ -29,7 +29,7 @@ public class Etablissements implements Iterable<Etablissement> {
 		return etablissements;
 	}
 	
-	public String getSuivants() {
+	public String curseurSuivant() {
 		return suivants;
 	}
 	
