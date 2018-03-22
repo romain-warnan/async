@@ -21,86 +21,27 @@ public class CallableTest {
 	
 	@Test
 	public void callable() throws InterruptedException, ExecutionException {
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		
-		System.out.println("Soumission du callable");
-		Future<Etablissement> future = executor.submit(() -> sireneService.fetchOne(1000));
-		executor.shutdown();
-		
-		System.out.println("Exécution d'un calcul");
-		calculeService.longCalcul();
-		
-		System.out.println("Récupération du contenu du future");
-		Etablissement etablissement = future.get();
-		System.out.println(etablissement);
-		
+		// Exécuter la fonction fetchOne()
+		// Lancer la fonction longCalcul() sans attendre le résultat de la fonction fetchOne.
+		// Imprimer le résultat de la fonction fetchOne
 	}
 	
 	@Test
 	public void callableIsDone() throws InterruptedException, ExecutionException {
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		
-		System.out.println("Soumission du callable");
-		Future<Etablissement> future = executor.submit(() -> sireneService.fetchOne(1000));
-		executor.shutdown();
-		
-		while(!future.isDone()) {
-			System.out.println("Requête en cours...");
-			TimeUnit.MILLISECONDS.sleep(200);
-		}
-		
-		System.out.println("Récupération du contenu du future");
-		Etablissement etablissement = future.get();
-		System.out.println(etablissement);
-		
-	}
-	
-	@Test
-	public void callableThenApply() throws InterruptedException, ExecutionException, TimeoutException {
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		System.out.println("Soumission du callable");
-		executor.shutdown();
-		Future<Etablissement> future = executor.submit(() -> sireneService.fetchOne(1500));
-		calculeService.longCalcul();
-		calculeService.longCalcul(future.get(1, TimeUnit.MINUTES));
-		System.out.println("Terminé");
-		
+		// Exécuter la fonction fetchOne()
+		// Tant que le résultat n'est pas arivé, imprimer un message chaque 20 millisecondes.
+		// Imprimer le résultat de la fonction fetchOne
 	}
 	
 	@Test
 	public void invokeAll() throws InterruptedException, ExecutionException {
-		ExecutorService executor = Executors.newFixedThreadPool(5);
-		
-		System.out.println("Soumission des callables");
-		List<Future<Etablissement>> futures = executor.invokeAll(Arrays.asList(
-			() -> sireneService.fetchOne(0),
-			() -> sireneService.fetchOne(100),
-			() -> sireneService.fetchOne(10000),
-			() -> sireneService.fetchOne(10001),
-			() -> sireneService.fetchOne(10002)
-		));
-		executor.shutdown();
-		
-		System.out.println("Récupération du contenu des futures");
-		for (Future<Etablissement> future : futures) {
-			System.out.println(future.get());
-		}
-		
+		// Exécuter en parallèle 5 fois la fonction fetchOne en faisant varier le paramètre rank.
+		// Essayer de faire varier la taille du pool de threads
 	}
 	
 	@Test
 	public void invokeAny() throws InterruptedException, ExecutionException {
-		ExecutorService executor = Executors.newFixedThreadPool(5);
-		
-		System.out.println("Soumission des callables");
-		Etablissement etablissement = executor.invokeAny(Arrays.asList(
-			() -> sireneService.fetchOne(0),
-			() -> sireneService.fetchOne(100),
-			() -> sireneService.fetchOne(10000),
-			() -> sireneService.fetchOne(10001),
-			() -> sireneService.fetchOne(10002)
-		));
-		executor.shutdown();
-		System.out.println(etablissement);
+		// Exécuter en parallèle 5 fois la fonction fetchOne en faisant varier le paramètre rank.
+		// Imprimer le premier établissement à être retourné
 	}
 }

@@ -25,42 +25,29 @@ public class CompletableFutureTest {
 	
 	@Test
 	public void thenAccept() throws InterruptedException, ExecutionException {
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		supplyAsync(() -> sireneService.fetchOne(1500))
-			.thenAccept(e -> calculService.longCalcul(e))
-			.thenRun(() -> System.out.println("Terminé"));
-		executor.shutdown();
-		calculService.longCalcul();
-		executor.awaitTermination(1, TimeUnit.MINUTES);
+		// Exécuter la fonction fetchOne
+		// Une fois la fontion terminée, exécuter la fonction longCalcul avec en paramètre l'établissement retourné
+		// Imprimer "Terminé" dans la console
+		// En parallèle de ces opérations, exécuter la fonction longCalcul sans paramètre
 	}
 	
 	@Test
 	public void thenApply() throws InterruptedException, ExecutionException, TimeoutException {
-		CompletableFuture<Etablissement> etablissement = supplyAsync(sireneService::fetchFirst)
-			.thenApply(sireneService::fetchNext)
-			.thenApply(sireneService::fetchNext)
-			.thenApply(e -> e.getValues().get(0));
-		calculService.longCalcul();
-		System.out.println(etablissement.get(1, TimeUnit.MINUTES));
+		// Exécuter la fonction fetchFirst
+		// Enchainer la méthode fetchNext
+		// Récupérer le premier établissement de la deuxième page
+		// En parallèle, exécuter la fonction longCalcul sans paramètre
 	}
 	
 	@Test
 	public void allOfTest() throws InterruptedException, ExecutionException, TimeoutException {
-		allOf(
-			supplyAsync(() -> sireneService.fetchOne(100)).thenAccept(System.out::println),
-			runAsync(calculService::longCalcul)
-		).get(1, TimeUnit.MINUTES);
+		// Exécuter la fonction fetchOne et imprimer le résultat une fois obtenu
+		// En parallèle, lancer la fonction longCalcul
 	}
 	
 	@Test
 	public void anyOfTest() throws InterruptedException, ExecutionException, TimeoutException {
-		Object object = anyOf(
-			supplyAsync(() -> sireneService.fetchOne(10000)),
-			supplyAsync(() -> sireneService.fetchOne(1000)),
-			supplyAsync(() -> sireneService.fetchOne(100)),
-			supplyAsync(() -> sireneService.fetchOne(10))
-		).get(1, TimeUnit.MINUTES);
-		Etablissement e = Objects.castIfBelongsToType(object, Etablissement.class);
-		System.out.println(e);
+		// Exécuter en parallèle 4 fois la fonction fetchOne en faisant varier le paramètre rank.
+		// Imprimer le premier établissement à être retourné
 	}
 }
