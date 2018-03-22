@@ -21,11 +21,11 @@ public class CallableTest {
 	
 	@Test
 	public void callable() throws InterruptedException, ExecutionException {
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		ExecutorService executor = Executors.newSingleThreadExecutor();
 		
 		System.out.println("Soumission du callable");
-		Future<Etablissement> future = executorService.submit(() -> sireneService.fetchOne(1000));
-		executorService.shutdown();
+		Future<Etablissement> future = executor.submit(() -> sireneService.fetchOne(1000));
+		executor.shutdown();
 		
 		System.out.println("Exécution d'un calcul");
 		calculeService.longCalcul();
@@ -33,15 +33,16 @@ public class CallableTest {
 		System.out.println("Récupération du contenu du future");
 		Etablissement etablissement = future.get();
 		System.out.println(etablissement);
+		
 	}
 	
 	@Test
 	public void callableIsDone() throws InterruptedException, ExecutionException {
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		ExecutorService executor = Executors.newSingleThreadExecutor();
 		
 		System.out.println("Soumission du callable");
-		Future<Etablissement> future = executorService.submit(() -> sireneService.fetchOne(1000));
-		executorService.shutdown();
+		Future<Etablissement> future = executor.submit(() -> sireneService.fetchOne(1000));
+		executor.shutdown();
 		
 		while(!future.isDone()) {
 			System.out.println("Requête en cours...");
@@ -51,52 +52,55 @@ public class CallableTest {
 		System.out.println("Récupération du contenu du future");
 		Etablissement etablissement = future.get();
 		System.out.println(etablissement);
+		
 	}
 	
 	@Test
 	public void callableThenApply() throws InterruptedException, ExecutionException, TimeoutException {
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		ExecutorService executor = Executors.newSingleThreadExecutor();
 		System.out.println("Soumission du callable");
-		Future<Etablissement> future = executorService.submit(() -> sireneService.fetchOne(1500));
-		executorService.shutdown();
+		executor.shutdown();
+		Future<Etablissement> future = executor.submit(() -> sireneService.fetchOne(1500));
 		calculeService.longCalcul();
 		calculeService.longCalcul(future.get(1, TimeUnit.MINUTES));
 		System.out.println("Terminé");
+		
 	}
 	
 	@Test
 	public void invokeAll() throws InterruptedException, ExecutionException {
-		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		ExecutorService executor = Executors.newFixedThreadPool(5);
 		
 		System.out.println("Soumission des callables");
-		List<Future<Etablissement>> futures = executorService.invokeAll(Arrays.asList(
+		List<Future<Etablissement>> futures = executor.invokeAll(Arrays.asList(
 			() -> sireneService.fetchOne(0),
 			() -> sireneService.fetchOne(100),
 			() -> sireneService.fetchOne(10000),
 			() -> sireneService.fetchOne(10001),
 			() -> sireneService.fetchOne(10002)
 		));
-		executorService.shutdown();
+		executor.shutdown();
 		
 		System.out.println("Récupération du contenu des futures");
 		for (Future<Etablissement> future : futures) {
 			System.out.println(future.get());
 		}
+		
 	}
 	
 	@Test
 	public void invokeAny() throws InterruptedException, ExecutionException {
-		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		ExecutorService executor = Executors.newFixedThreadPool(5);
 		
 		System.out.println("Soumission des callables");
-		Etablissement etablissement = executorService.invokeAny(Arrays.asList(
+		Etablissement etablissement = executor.invokeAny(Arrays.asList(
 			() -> sireneService.fetchOne(0),
 			() -> sireneService.fetchOne(100),
 			() -> sireneService.fetchOne(10000),
 			() -> sireneService.fetchOne(10001),
 			() -> sireneService.fetchOne(10002)
 		));
-		executorService.shutdown();
+		executor.shutdown();
 		System.out.println(etablissement);
 	}
 }
