@@ -71,4 +71,20 @@ public class CallableTest {
 			System.out.println(future.get());
 		}
 	}
+	
+	@Test
+	public void invokeAny() throws InterruptedException, ExecutionException {
+		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		
+		System.out.println("Soumission des callables");
+		Etablissement etablissement = executorService.invokeAny(Arrays.asList(
+			() -> sireneService.fetchOne(0),
+			() -> sireneService.fetchOne(100),
+			() -> sireneService.fetchOne(10000),
+			() -> sireneService.fetchOne(10001),
+			() -> sireneService.fetchOne(10002)
+		));
+		executorService.shutdown();
+		System.out.println(etablissement);
+	}
 }
