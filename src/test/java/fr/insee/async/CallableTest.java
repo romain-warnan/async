@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ public class CallableTest {
 	private CalculService calculeService = CalculService.getInstance();
 	
 	@Test
-	public void callableTest() throws InterruptedException, ExecutionException {
+	public void callable() throws InterruptedException, ExecutionException {
 		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
 		System.out.println("Soumission du callable");
@@ -35,7 +36,7 @@ public class CallableTest {
 	}
 	
 	@Test
-	public void callableIsDoneTest() throws InterruptedException, ExecutionException {
+	public void callableIsDone() throws InterruptedException, ExecutionException {
 		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
 		System.out.println("Soumission du callable");
@@ -50,6 +51,17 @@ public class CallableTest {
 		System.out.println("Récupération du contenu du future");
 		Etablissement etablissement = future.get();
 		System.out.println(etablissement);
+	}
+	
+	@Test
+	public void callableThenApply() throws InterruptedException, ExecutionException, TimeoutException {
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		System.out.println("Soumission du callable");
+		Future<Etablissement> future = executorService.submit(() -> sireneService.fetchOne(1500));
+		executorService.shutdown();
+		calculeService.longCalcul();
+		calculeService.longCalcul(future.get(1, TimeUnit.MINUTES));
+		System.out.println("Terminé");
 	}
 	
 	@Test
