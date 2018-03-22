@@ -1,11 +1,8 @@
 package fr.insee.async.sirene.service;
 
-import java.util.List;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
 
-import fr.insee.async.Etablissement;
 import fr.insee.async.Etablissements;
 
 //https://qfapisirenlht02.ad.insee.intra/apisirene-web/ws/siret?debut=x 
@@ -28,7 +25,7 @@ public class SireneService {
 		return instance;
 	}
 
-	private List<Etablissement> etablissements(int debut) {
+	public Etablissements etablissements(int debut) {
 		SireneReponse reponse = client.target("https://qfapisirenlht02.ad.insee.intra")
 			.path("apisirene-web/ws/siret")
 			.queryParam("champs", "Siren,Nic,Denomination")
@@ -36,18 +33,18 @@ public class SireneService {
 			.queryParam("debut", debut)
 			.request(MediaType.APPLICATION_JSON_TYPE)
 			.get(SireneReponse.class);
-		return Etablissements.from(reponse);
+		return new Etablissements(reponse);
 	}
 	
-	public List<Etablissement> quickRequest() {
+	public Etablissements quickRequest() {
 		return etablissements(0);
 	}
 	
-	public List<Etablissement> averageRequest() {
+	public Etablissements averageRequest() {
 		return etablissements(5_000);
 	}
 	
-	public List<Etablissement> slowRequest() {
+	public Etablissements slowRequest() {
 		return etablissements(50_000);
 	}
 }
