@@ -2,6 +2,8 @@ package fr.insee.async;
 
 import java.util.concurrent.CompletableFuture;
 import static java.util.concurrent.CompletableFuture.*;
+
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,5 +47,19 @@ public class CompletableFutureTest {
 			supplyAsync(() -> sireneService.fetchOne(100)).thenAccept(System.out::println),
 			runAsync(calculService::longCalcul)
 		).get(1, TimeUnit.MINUTES);
+	}
+	
+	
+	@Test
+	public void anyOfTest() throws InterruptedException, ExecutionException, TimeoutException {
+		ExecutorService executor = Executors.newFixedThreadPool(5);
+		anyOf(
+			supplyAsync(() -> sireneService.fetchOne(10000), executor),
+			supplyAsync(() -> sireneService.fetchOne(1000), executor),
+			supplyAsync(() -> sireneService.fetchOne(100), executor),
+			supplyAsync(() -> sireneService.fetchOne(10), executor)
+		).thenAccept(System.out::println);
+		executor.shutdown();
+		executor.awaitTermination(1, TimeUnit.MINUTES);
 	}
 }
