@@ -6,9 +6,6 @@ import javax.ws.rs.core.MediaType;
 import fr.insee.async.Etablissement;
 import fr.insee.async.Etablissements;
 
-//https://qfapisirenlht02.ad.insee.intra/apisirene-web/ws/siret?debut=x 
-//https://qfapisirenlht02.ad.insee.intra/apisirene-web/ws/siret?curseur=*
-//https://qfapisirenlht02.ad.insee.intra/apisirene-web/ws/siret?champs=Siren,Nic,Denomination&q=Denomination:*
 public class SireneService {
 
 	private Client client;
@@ -27,6 +24,7 @@ public class SireneService {
 	}
 
 	public Etablissement fetchOne(int rank) {
+		System.out.println(String.format("fetchOne(%s)", rank));
 		SireneReponse reponse = client.target("https://qfapisirenlht02.ad.insee.intra")
 			.path("apisirene-web/ws/siret")
 			.queryParam("champs", "Siren,Nic,Denomination")
@@ -43,6 +41,7 @@ public class SireneService {
 	}
 	
 	public Etablissements fetchFrom(int start) {
+		System.out.println(String.format("fetchFrom(%s)", start));
 		SireneReponse reponse = client.target("https://qfapisirenlht02.ad.insee.intra")
 			.path("apisirene-web/ws/siret")
 			.queryParam("champs", "Siren,Nic,Denomination")
@@ -54,6 +53,7 @@ public class SireneService {
 	}
 	
 	public Etablissements fetchFirst() {
+		System.out.println("fetchFirst()");
 		SireneReponse reponse = client.target("https://qfapisirenlht02.ad.insee.intra")
 			.path("apisirene-web/ws/siret")
 			.queryParam("champs", "Siren,Nic,Denomination")
@@ -65,6 +65,7 @@ public class SireneService {
 	}
 	
 	public Etablissements fetchNext(Etablissements previous) {
+		System.out.println(String.format("fetchNext(%s)", previous.curseurSuivant()));
 		SireneReponse reponse = client.target("https://qfapisirenlht02.ad.insee.intra")
 			.path("apisirene-web/ws/siret")
 			.queryParam("champs", "Siren,Nic,Denomination")
